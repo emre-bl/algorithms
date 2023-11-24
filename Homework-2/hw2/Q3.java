@@ -1,6 +1,8 @@
 import java.lang.reflect.Array;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 public class Q3 {
     public static void bucketSort(double[] arr) {
@@ -9,49 +11,40 @@ public class Q3 {
             return;
         }
 
-        ArrayList<Double>[] buckets = new ArrayList[12];
+        ArrayList<Double>[] buckets = new ArrayList[16];
 
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 16; i++) {
             buckets[i] = new ArrayList<Double>();
         }
 
         for (int i = 0; i < n; i++) {
             int bucketIndex = 0;
-            if (arr[i] > 0 && arr[i] < 0.4) {
+            if (arr[i] < 0.6) {
                 bucketIndex = 0;
-            } else if (arr[i] >= 0.4 && arr[i] < 0.6) {
-                bucketIndex = 1;
             } else if (arr[i] < 0.7) {
-                bucketIndex = 2;
-            } else if (arr[i] < 0.75) {
-                bucketIndex = 3;
-            } else if (arr[i] < 0.8) {
-                bucketIndex = 4;
-            } else if (arr[i] < 0.83) {
-                bucketIndex = 5;
-            } else if (arr[i] < 0.86) {
-                bucketIndex = 6;
-            } else if (arr[i] < 0.89) {
-                bucketIndex = 7;
-            } else if (arr[i] < 0.92) {
-                bucketIndex = 8;
+                bucketIndex = 1;
+            } else if (arr[i] < 0.9) { // bura hatalı
+                bucketIndex = (int) ((Math.ceil((arr[i] - 0.7) * 100)) / 2 + 1) ;
+            } else if (arr[i] < 0.925) {
+                bucketIndex = 12; 
             } else if (arr[i] < 0.95) {
-                bucketIndex = 9;
-            } else if (arr[i] < 0.97) {
-                bucketIndex = 10;
-            } else if (arr[i] < 1) {
-                bucketIndex = 11;
+                bucketIndex = 13;
+            } else if (arr[i] < 0.975) {
+                bucketIndex = 14;
+            } else {
+                bucketIndex = 15;
             }
 
             buckets[bucketIndex].add(arr[i]);
         }
 
-        for (int i = 0; i < 12; i++) {
-            insertionSort(buckets[i]);
+        for (int i = 0; i < 16; i++) {
+            if (buckets[i].size() <= 50) insertionSort(buckets[i]);
+            else quickSort(buckets[i], 0, buckets[i].size() - 1);
         }
 
         int index = 0;
-        for(int i = 0; i < 12; i++) {
+        for(int i = 0; i < 16; i++) {
             for(int j = 0; j < buckets[i].size(); j++) {
                 arr[index++] = buckets[i].get(j);
             }
@@ -71,14 +64,62 @@ public class Q3 {
         }
     }
 
-    public static void main(String[] args) {
-        double[] arr = {0.1, 0.2, 0.4, 0.5, 0.6, 0.7, 0.9, 0.95, 0.97, 0.86, 0.71, 0.85, 0.83, 0.82, 0.81, 0.8, 0.79, 0.78, 0.77, 0.76, 0.75};
-        bucketSort(arr);
+    public static void quickSort(ArrayList<Double> arr, int low, int high) {
+        if (low < high) {
+            int pi = partition(arr, low, high);
 
-        System.out.println("Sorted array:");
-        for (double num : arr) {
-            System.out.print(num + " ");
+            quickSort(arr, low, pi - 1);
+            quickSort(arr, pi + 1, high);
         }
+    }
+
+    public static int partition(ArrayList<Double> arr, int low, int high) {
+        double pivot = arr.get(high);
+        int i = low - 1;
+
+        for (int j = low; j < high; j++) {
+            if (arr.get(j) < pivot) {
+                i++;
+
+                double temp = arr.get(i);
+                arr.set(i, arr.get(j));
+                arr.set(j, temp);
+            }
+        }
+
+        double temp = arr.get(i + 1);
+        arr.set(i + 1, arr.get(high));
+        arr.set(high, temp);
+
+        return i + 1;
+    }
+
+
+    public static double[] generateArray(int n) {
+        double[] result = new double[n];
+        Random random = new Random();
+
+        for (int i = 0; i < n; i++) {
+            // Generate a random value between 0 and 1
+            double u = random.nextDouble();
+
+            // Calculate the value based on the inverse transform sampling
+            double value = Math.pow(u, 0.25); // Inverse of f(x) = 4x^3
+            result[i] = value;
+        }
+
+        return result;
+    }
+
+    public static void main(String[] args) {
+        int n = 10000;
+        double[] arr = generateArray(n);
+        DecimalFormat df = new DecimalFormat("0.00");
+        bucketSort(arr);
+        /*  
+        for (double value : arr) {
+            System.out.print(df.format(value) + " ");
+        }*/
     }
 }
 
