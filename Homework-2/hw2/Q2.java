@@ -21,16 +21,17 @@ class Q2 {
             System.out.println("New S: " + newS + " Shift: " + shift + " Tries: " + tries);
             return run(newS, eindex, known, tries, shift-1);
         } else {
-            for (int i = sindex + 1; i <= newS; i++) {
+            int i;
+            for (i = sindex + 1; i < newS; i++) {
                 tries++;
                 if (!isSurvived(i)) {
                     int[] res = {i-1, tries};
                     return res;
                 }
             }
+            int res[] = {i, tries};
+            return res;
         }
-        int res[] = {newS, tries};
-        return res;
     }
 
     public boolean isSurvived(int altitude) {
