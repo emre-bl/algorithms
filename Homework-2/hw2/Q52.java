@@ -1,51 +1,50 @@
 import java.util.Arrays;
-import java.util.Arrays;
 import java.util.Random;
 
-public class Q5 {
+
+public class Q52 {
+
     public static int[] findNumbers(int n,int k,int l,int[] arr) {
+        int kth = quickSelect(arr, 0, arr.length - 1, k-1);
         int[] closestIntegers = new int[l];
-        int last_idx, first_idx;
-        System.out.println("Last idx: " + (k + (int)Math.ceil((double)l/2) -1));
-        last_idx = quickSelect(arr, 0, arr.length-1, k + (int)Math.ceil(l/2) -1);
-        first_idx = quickSelect(arr, 0, arr.length-1, k - l/2 -1);
         
-        System.out.println("first_idx: " + first_idx);
-        System.out.println("last_idx: " + last_idx);
-        // return the integers between first_idx and last_idx
-        int idx = 0;
-        for(int i = first_idx; i <= last_idx; i++) {
-            closestIntegers[idx++] = arr[i];
+        int[] diffs = new int[arr.length];
+
+        for (int i = 0; i < arr.length; i++) {
+            diffs[i] = arr[i] - kth;
         }
-
         
-        System.out.println(Arrays.toString(arr));
-        System.out.println(Arrays.toString(closestIntegers));
-        
-
+        for (int i = 0; i < l; i++) {
+            int minIdx = getMinIdx(diffs);
+            closestIntegers[i] = diffs[minIdx] + kth;
+            diffs[minIdx] = Integer.MAX_VALUE;
+        }
+       
         return closestIntegers;
     }
 
-    private static int getMaxIndex(int[] arr) {
-        int maxIndex = 0;
-        for (int i = 1; i < arr.length; i++) {
-            if (arr[i] > arr[maxIndex]) {
-                maxIndex = i;
+    private static int getMinIdx(int[] arr) {
+        int minDiff = Integer.MAX_VALUE;
+        int minDiffIndex = 0;
+        for (int i = 0; i < arr.length; i++) {
+            if (Math.abs(arr[i]) < minDiff) {
+                minDiffIndex = i;
+                minDiff = Math.abs(arr[i]);
             }
         }
-        return maxIndex;
+        return minDiffIndex;
     }
 
     private static int quickSelect(int[] A, int left, int right, int k) {
         if (left == right) {
-            return left;
+            return A[left];
         }
 
         int pivotIndex = partition(A, left, right);
         int kIndex = pivotIndex - left;
 
         if (k == kIndex) {
-            return kIndex;
+            return A[pivotIndex];
         } else if (k < kIndex) {
             return quickSelect(A, left, pivotIndex - 1, k);
         } else {
@@ -75,19 +74,23 @@ public class Q5 {
     }
 
     public static void main(String[] args) {
-        int[] A = {10,3,7,8,5,4,6,9,2,1};
-        int k = 7;
-        int l = 3;
+        int[] A = generateRandomArray(10);
+        int k = 1;
+        int l = 4;
         System.out.println(Arrays.toString(A));
         int[] closestIntegers = findNumbers(0, k, l, A);
         System.out.println(Arrays.toString(closestIntegers));
     }
 
-    // Helper method to generate a random positive integer array
+    // Helper method to generate a random integer array
     public static int[] generateRandomArray(int size) {
         int[] arr = new int[size];
         Random random = new Random();
-        for (int i = 0; i < size; i++)  arr[i] = Math.abs(random.nextInt() % (size * 10)) + 1;
+
+        for (int i = 0; i < size; i++) {
+            arr[i] = Math.abs(random.nextInt() % size + 1);
+        }
+
         return arr;
     }
 }
