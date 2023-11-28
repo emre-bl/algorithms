@@ -23,7 +23,7 @@ public class Main {
         public static int[] findAltitude(int maxAltitude) {
                 int k, numberOfExperiments;
                 int shift = find_first_shift(maxAltitude);
-                int[] result = run(0, maxAltitude, 0, shift);
+                int[] result = check(0, maxAltitude, 0, shift);
                 k = result[0];
                 numberOfExperiments = result[1];
 
@@ -49,11 +49,11 @@ public class Main {
             checkAltitude(result[0]);
         }
 
-        public static int[] run(int sindex, int known, int tries, int shift) {
+        public static int[] check(int sindex, int known, int tries, int shift) {
             tries++;
             int newS = sindex + shift;
             if (isSurvived(newS)) {
-                return run(newS, known, tries, shift-1);
+                return check(newS, known, tries, shift-1);
             } else {
                 int i;
                 for (i = sindex + 1; i < newS; i++) {

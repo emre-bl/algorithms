@@ -32,30 +32,24 @@ public class Main {
             int kth = quickSelect(arr, 0, arr.length - 1, k-1);
             int[] closestIntegers = new int[l];
             
+            int[] diffs_abs = new int[arr.length];
             int[] diffs = new int[arr.length];
+
             for (int i = 0; i < arr.length; i++) {
+                diffs_abs[i] = Math.abs(arr[i] - kth);
                 diffs[i] = arr[i] - kth;
             }
 
-            for (int i = 0; i < l; i++) {
-                int minIdx = getMinIdx(diffs);
-                closestIntegers[i] = diffs[minIdx] + kth;
-                diffs[minIdx] = Integer.MAX_VALUE;
-            }
-            
-            return closestIntegers;
-        }
+            int max_diff = quickSelect(diffs_abs, 0, diffs_abs.length-1, l-1);
 
-        private static int getMinIdx(int[] arr) {
-            int minDiff = Integer.MAX_VALUE;
-            int minDiffIndex = 0;
+            int idx = 0;
             for (int i = 0; i < arr.length; i++) {
-                if (Math.abs(arr[i]) < minDiff) {
-                    minDiffIndex = i;
-                    minDiff = Math.abs(arr[i]);
+                if (Math.abs(diffs[i]) <= max_diff) {
+                    closestIntegers[idx++] = arr[i];
                 }
+                if (idx == l) break;
             }
-            return minDiffIndex;
+            return closestIntegers;
         }
 
         private static int quickSelect(int[] A, int left, int right, int k) {
