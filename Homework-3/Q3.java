@@ -1,22 +1,26 @@
+import java.util.Arrays;
+
 public class Q3 {
     public static void main(String[] args) {
-        
+        int[] a = {1,3, 10, 5};
+        int[] b = {6,9, 12, 7};
+        System.out.println(switchCount(a, b));
+
+
     }   
 
 
     public static int switchCount(int[] a, int[] b) {
-        // Sort the arrays based on the exit times (b)
-        quicksort(a, b, 0, a.length - 1);
+        quicksort(b, a, 0, a.length - 1);
 
-        int count = 1; // Initialize count to 1 since the first person switches on the lights
-        int lastExitTime = b[0]; // Track the exit time of the last person
+        int count = 1; // a[0] girdi varsayıyoruz
+        int lastExitTime = b[0]; 
 
         for (int i = 1; i < a.length; i++) {
-            if (a[i] > lastExitTime) {
-                // If the next person enters after the lights are switched off, increment count
+            if (a[i] > lastExitTime) { // içerdeki çıktıktan sonra giren varsa
                 count++;
             }
-            lastExitTime = Math.max(lastExitTime, b[i]);
+            lastExitTime = Math.max(lastExitTime, b[i]); 
         }
 
         return count;
