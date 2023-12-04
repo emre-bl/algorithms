@@ -29,23 +29,23 @@ public class Main {
  
     static class TaskA {
 
-	    public int switchCount(int [] a, int [] b)  {
-            quicksort(b, a, 0, a.length - 1);
+	    public int switchCount(int [] a, int [] b)  { 
+            quicksort(b, a, 0, a.length - 1); // sort b in ascending order and sort a accordingly  
 
-            int count = 1; 
-            int lastExitTime = b[0]; 
-
-            for (int i = 1; i < a.length; i++) {
-                if (a[i] > lastExitTime) {
-                    count++;
+            int count = 1; // first person 
+            int lastExitTime = b[0];  // first exit time is the first element in b
+ 
+            for (int i = 1; i < a.length; i++) { // we start from the second person  
+                if (a[i] > lastExitTime) { // if the second person enters after the first person exits
+                    count++; // we can switch
                 }
-                lastExitTime = Math.max(lastExitTime, b[i]);
+                lastExitTime = Math.max(lastExitTime, b[i]); // update the last exit time
             }
 
             return count;
     	}
 
-        private static void quicksort(int[] a, int[] b, int low, int high) {
+        private static void quicksort(int[] a, int[] b, int low, int high) { 
             if (low < high) {
                 int pivotIndex = partition(a, b, low, high);
                 quicksort(a, b, low, pivotIndex - 1);

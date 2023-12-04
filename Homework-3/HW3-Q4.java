@@ -2,15 +2,11 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
+
 import java.io.BufferedReader;
-import java.util.Comparator;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Built using CHelper plug-in
@@ -28,36 +24,54 @@ public class Main {
         out.close();
     }
  
-    static class TaskA { 
-        public static double letsGetRich(double[] p,int k) {
-            int n = p.length; 
-            if (n < 2 || k == 0) return 0; // no transaction can be made
-        
-            double[] dp = new double[n]; // dp[i] is the max profit with i transactions
-        
-            for (int i = 0; i < k; i++) { // for each transaction
-                double maxProfit = -p[0];  
-                double prev = 0; 
-        
-                for (int j = 1; j < n; j++) {  // for each day
-                    double temp = dp[j];  
-                    dp[j] = Math.max(dp[j - 1], p[j] + maxProfit); // max profit with j transactions
-                    maxProfit = Math.max(maxProfit, prev - p[j]);  // max profit with j - 1 transactions
-                    prev = temp; 
+    static class TaskA {
+
+	    public int largestTour(ArrayList<ArrayList<Integer>> adList) {
+            int V = adList.size();
+            int maxNodes = 0;
+            for (int i = 0; i < V; i++) {
+                int nodes = dfs(i, new boolean[V], adList);
+                maxNodes = Math.max(maxNodes, nodes);
+                
+            }
+
+            if (maxNodes == 1) return 1;
+            
+            return maxNodes - 1;
+        }
+
+        private int dfs(int node, boolean[] visited, ArrayList<ArrayList<Integer>> adList) {
+            visited[node] = true;
+            int count = 1;
+            for (int neighbor : adList.get(node)) {
+                if (!visited[neighbor]) {
+                    count += dfs(neighbor, visited, adList);
                 }
             }
-        
-            return dp[n - 1] * 1000; // we have 1000 shares
+            return count;
         }
 
         public void solve(InputReader in, PrintWriter out) {
             int n = in.nextInt();
-            int k = in.nextInt();
-            double[] p = new double[n];
-            for (int i = 0 ; i < n ; i++)
-                p[i] = in.nextDouble();
-            System.out.println(letsGetRich(p, k)); 
+            int m = in.nextInt();
+
+            ArrayList<ArrayList<Integer> > adjList
+            = new ArrayList<ArrayList<Integer> >(n);
+
+            for (int i = 0; i < n; i++)
+                adjList.add(new ArrayList<Integer>());
+
+            for (int i = 0 ; i < m ; i++) {
+                int u,v;
+                u = in.nextInt();
+                v = in.nextInt();
+                u--;
+                v--;
+                adjList.get(u).add(v);
+            }
+            System.out.println(largestTour(adjList));
         }
+
     }
  
     static class InputReader {
@@ -79,6 +93,7 @@ public class Main {
             }
             return tokenizer.nextToken();
         }
+
  
         public int nextInt() {
             return Integer.parseInt(next());
@@ -86,10 +101,6 @@ public class Main {
  
         public long nextLong() {
             return Long.parseLong(next());
-        }
-
-        public double nextDouble() {
-            return Double.parseDouble(next());
         }
  
 
